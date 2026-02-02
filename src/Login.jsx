@@ -14,7 +14,7 @@ export default function Login() {
     setError("");
     try {
       await login(email, password);
-      navigate("/app/shipments");
+      navigate("/shipmentsPage");
     } catch (err) {
       setError(err?.message || "Error de login");
     }

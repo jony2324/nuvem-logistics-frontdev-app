@@ -1,16 +1,49 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import "./ShipmentsPage.css";
 
 const initialShipments = [
-  { id: "SHP-0001", status: "En tránsito", origin: "Guadalajara", destination: "CDMX", eta: "2025-11-15", carrier: "DHL", customer: "ACME S.A." },
-  { id: "SHP-0002", status: "Entregado", origin: "Monterrey", destination: "Querétaro", eta: "2025-11-10", carrier: "FedEx", customer: "TechCorp" },
-  { id: "SHP-0003", status: "Pendiente", origin: "Zapopan", destination: "Tijuana", eta: "2025-11-20", carrier: "Estafeta", customer: "Store MX" },
-  { id: "SHP-0004", status: "En tránsito", origin: "CDMX", destination: "Guadalajara", eta: "2025-11-18", carrier: "RedPack", customer: "Retailers GDL" }
+  {
+    id: "SHP-0001",
+    status: "En tránsito",
+    origin: "Guadalajara",
+    destination: "CDMX",
+    eta: "2025-11-15",
+    carrier: "DHL",
+    customer: "ACME S.A.",
+  },
+  {
+    id: "SHP-0002",
+    status: "Entregado",
+    origin: "Monterrey",
+    destination: "Querétaro",
+    eta: "2025-11-10",
+    carrier: "FedEx",
+    customer: "TechCorp",
+  },
+  {
+    id: "SHP-0003",
+    status: "Pendiente",
+    origin: "Zapopan",
+    destination: "Tijuana",
+    eta: "2025-11-20",
+    carrier: "Estafeta",
+    customer: "Store MX",
+  },
+  {
+    id: "SHP-0004",
+    status: "En tránsito",
+    origin: "CDMX",
+    destination: "Guadalajara",
+    eta: "2025-11-18",
+    carrier: "RedPack",
+    customer: "Retailers GDL",
+  },
 ];
 
 const statusColors = {
-  "Pendiente": "badge badge--pending",
+  Pendiente: "badge badge--pending",
   "En tránsito": "badge badge--intransit",
-  "Entregado": "badge badge--delivered"
+  Entregado: "badge badge--delivered",
 };
 
 export default function ShipmentsPage() {
@@ -18,12 +51,15 @@ export default function ShipmentsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
 
   const filteredShipments = useMemo(() => {
+    const q = query.trim().toLowerCase();
+
     return initialShipments.filter((s) => {
       const matchesQuery =
-        s.id.toLowerCase().includes(query.toLowerCase()) ||
-        s.origin.toLowerCase().includes(query.toLowerCase()) ||
-        s.destination.toLowerCase().includes(query.toLowerCase()) ||
-        s.customer.toLowerCase().includes(query.toLowerCase());
+        !q ||
+        s.id.toLowerCase().includes(q) ||
+        s.origin.toLowerCase().includes(q) ||
+        s.destination.toLowerCase().includes(q) ||
+        s.customer.toLowerCase().includes(q);
 
       const matchesStatus = statusFilter === "all" ? true : s.status === statusFilter;
 
@@ -48,6 +84,7 @@ export default function ShipmentsPage() {
             placeholder="ID, origen, destino, cliente..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            autoComplete="off"
           />
         </div>
 
@@ -75,6 +112,7 @@ export default function ShipmentsPage() {
               <th>Estado</th>
             </tr>
           </thead>
+
           <tbody>
             {filteredShipments.map((s) => (
               <tr key={s.id}>
@@ -85,14 +123,14 @@ export default function ShipmentsPage() {
                 <td>{s.carrier}</td>
                 <td>{s.eta}</td>
                 <td>
-                  <span className={statusColors[s.status]}>{s.status}</span>
+                  <span className={statusColors[s.status] || "badge"}>{s.status}</span>
                 </td>
               </tr>
             ))}
 
             {filteredShipments.length === 0 && (
               <tr>
-                <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
+                <td colSpan={7} style={{ textAlign: "center", padding: "1rem" }}>
                   No se encontraron envíos.
                 </td>
               </tr>
